@@ -1,0 +1,229 @@
+{
+  "gateway": {
+    "name": "mcp-gateway",
+    "version": "1.0.0",
+    "description": "MCP Gateway — aggregates multiple MCP servers into one unified interface",
+    "transport": "http",
+    "http": {
+      "enabled": true,
+      "port": 5000,
+      "host": "0.0.0.0",
+      "path": {
+        "sse": "/sse",
+        "messages": "/messages",
+        "health": "/health"
+      }
+    },
+    "auth": {
+      "enabled": false,
+      "apiKeys": []
+    },
+    "rateLimit": {
+      "enabled": true,
+      "windowMs": 60000,
+      "maxRequests": 100
+    },
+    "logging": {
+      "level": "info",
+      "format": "json"
+    }
+  },
+  "servers": [
+    {
+      "id": "calculator",
+      "name": "Calculator Server",
+      "description": "Mathematical computation tools",
+      "namespace": "calc",
+      "enabled": true,
+      "transport": {
+        "type": "stdio",
+        "command": "node",
+        "args": [
+          "dist/servers/calculator/index.js"
+        ]
+      },
+      "healthCheck": {
+        "enabled": true,
+        "intervalMs": 30000
+      },
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 1000,
+        "backoffMultiplier": 2
+      }
+    },
+    {
+      "id": "weather",
+      "name": "Weather Server",
+      "description": "Weather information and forecasts (mock)",
+      "namespace": "weather",
+      "enabled": true,
+      "transport": {
+        "type": "stdio",
+        "command": "node",
+        "args": [
+          "dist/servers/weather/index.js"
+        ]
+      },
+      "healthCheck": {
+        "enabled": true,
+        "intervalMs": 30000
+      },
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 1000,
+        "backoffMultiplier": 2
+      }
+    },
+    {
+      "_comment": "--- EXTERNAL SERVERS (disabled by default — set enabled:true to activate) ---"
+    },
+    {
+      "id": "filesystem",
+      "name": "Filesystem Server",
+      "description": "Read/write local files via @modelcontextprotocol/server-filesystem",
+      "namespace": "fs",
+      "enabled": false,
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-filesystem",
+          "C:/Users/gouri"
+        ]
+      },
+      "healthCheck": {
+        "enabled": true,
+        "intervalMs": 30000
+      },
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 1000,
+        "backoffMultiplier": 2
+      }
+    },
+    {
+      "id": "github",
+      "name": "GitHub Server",
+      "description": "Search repos, issues, PRs via @modelcontextprotocol/server-github",
+      "namespace": "github",
+      "enabled": false,
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-github"
+        ],
+        "env": {
+          "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_replace_with_your_token"
+        }
+      },
+      "healthCheck": {
+        "enabled": true,
+        "intervalMs": 30000
+      },
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 1000,
+        "backoffMultiplier": 2
+      }
+    },
+    {
+      "id": "brave-search",
+      "name": "Brave Search Server",
+      "description": "Web search via @modelcontextprotocol/server-brave-search",
+      "namespace": "search",
+      "enabled": false,
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-brave-search"
+        ],
+        "env": {
+          "BRAVE_API_KEY": "replace_with_your_brave_api_key"
+        }
+      },
+      "healthCheck": {
+        "enabled": true,
+        "intervalMs": 30000
+      },
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 1000,
+        "backoffMultiplier": 2
+      }
+    },
+    {
+      "id": "postgres",
+      "name": "PostgreSQL Server",
+      "description": "Query a Postgres database via @modelcontextprotocol/server-postgres",
+      "namespace": "db",
+      "enabled": false,
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-postgres",
+          "postgresql://user:password@localhost/mydb"
+        ]
+      },
+      "healthCheck": {
+        "enabled": true,
+        "intervalMs": 30000
+      },
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 1000,
+        "backoffMultiplier": 2
+      }
+    },
+    {
+      "id": "remote-sse-example",
+      "name": "Remote SSE Server",
+      "description": "Example of connecting to a remote MCP server over HTTP/SSE",
+      "namespace": "remote",
+      "enabled": false,
+      "transport": {
+        "type": "sse",
+        "url": "http://192.168.1.100:4000/sse",
+        "headers": {
+          "Authorization": "Bearer replace_with_token"
+        }
+      },
+      "healthCheck": {
+        "enabled": true,
+        "intervalMs": 30000
+      },
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 2000,
+        "backoffMultiplier": 2
+      }
+    },
+    {
+      "id": "MCPexcel",
+      "name": "mcpexcel",
+      "description": "test",
+      "namespace": "excel",
+      "enabled": true,
+      "transport": {
+        "type": "sse",
+        "url": "http://localhost:3000/sse"
+      },
+      "healthCheck": {
+        "enabled": true,
+        "intervalMs": 30000
+      },
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 1000,
+        "backoffMultiplier": 2
+      }
+    }
+  ]
+}
